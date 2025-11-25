@@ -30,4 +30,4 @@ function help(nums, k) {
   return ans;
 }
 
-help([0, 0, 0, 0, 0], 0);
+console.log(help([1, 2, 3], 5));
