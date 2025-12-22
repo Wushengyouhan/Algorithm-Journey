@@ -3,15 +3,20 @@
  * @return {number}
  */
 var maxDepth = function (s) {
-  let level = 0;
-  let ans = 0;
-  for (const c of s) {
-    if (c === '(') {
-      level++;
-      ans = Math.max(ans, level);
-    } else if (c === ')') {
-      level--;
+  let currentDepth = 0; // 替代 level
+  let maxDepth = 0; // 替代 ans
+
+  for (const char of s) {
+    if (char === '(') {
+      currentDepth++;
+      // 更新最大深度
+      if (currentDepth > maxDepth) {
+        maxDepth = currentDepth;
+      }
+      // 或者: maxDepth = Math.max(maxDepth, currentDepth);
+    } else if (char === ')') {
+      currentDepth--;
     }
   }
-  return ans;
+  return maxDepth;
 };
