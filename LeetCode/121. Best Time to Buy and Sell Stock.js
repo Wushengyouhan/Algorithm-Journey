@@ -1,15 +1,13 @@
-/**
- * @param {number[]} prices
- * @return {number}
- */
 var maxProfit = function (prices) {
-  let ans = 0;
-  // 维护左边的最低价格
-  let minPrice = prices[0];
-  // 遍历右边
-  for (const p of prices) {
-    ans = Math.max(ans, p - minPrice);
-    minPrice = Math.min(minPrice, p);
+  let minPrice = Infinity;
+  let maxProfit = 0;
+
+  for (let price of prices) {
+    minPrice = Math.min(minPrice, price); // 更新最低买入价
+    maxProfit = Math.max(maxProfit, price - minPrice); // 更新最大利润
   }
-  return ans;
+
+  return maxProfit;
 };
+
+maxProfit([7, 1, 5, 3, 6, 4]);
