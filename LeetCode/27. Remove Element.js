@@ -21,5 +21,3 @@ var removeElement = function (nums, val) {
   // 最终慢指针走的步数，恰好就是留下来的元素个数
   return slow;
 };
-
-removeElement('ss');
