@@ -42,3 +42,5 @@ var threeSum = function (nums) {
 
   return res;
 };
+
+threeSum([-1, 0, 1, 2, -1, -4]);
