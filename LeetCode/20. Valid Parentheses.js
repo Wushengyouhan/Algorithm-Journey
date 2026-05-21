@@ -3,36 +3,36 @@
  * @return {boolean}
  */
 var isValid = function (s) {
-  // 剪枝：如果长度是奇数，肯定无法配对，直接 false
+  // 坑1：奇数长度必然无法闭合，提前拦截，提升性能
   if (s.length % 2 !== 0) return false;
 
-  // 建立一个映射表，方便查找右括号对应的左括号
+  const stack = [];
+
+  // 技巧：右括号作为 Key，左括号作为 Value
   const map = {
     ')': '(',
     ']': '[',
     '}': '{',
   };
 
-  const stack = [];
-
   for (let i = 0; i < s.length; i++) {
     const char = s[i];
 
-    // 如果 char 是 map 的 key，说明它是右括号
+    // 如果当前字符在字典的键里（说明它是右括号）
     if (map[char]) {
-      // 取出栈顶元素（如果栈空，pop返回undefined）
-      const top = stack.pop();
+      // 弹出栈顶元素。如果栈为空，pop() 会返回 undefined
+      const topElement = stack.pop();
 
-      // 检查取出的左括号是否和当前右括号匹配
-      if (top !== map[char]) {
+      // 判断弹出的左括号，是否和字典里规定的匹配
+      if (topElement !== map[char]) {
         return false;
       }
     } else {
-      // 不是右括号，那肯定是左括号，直接入栈
+      // 是左括号，压入栈中
       stack.push(char);
     }
   }
 
-  // 最后必须栈空才算有效
+  // 坑2：遍历完必须检查栈是否为空
   return stack.length === 0;
 };
