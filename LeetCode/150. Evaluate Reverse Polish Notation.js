@@ -5,31 +5,37 @@
 var evalRPN = function (tokens) {
   const stack = [];
 
-  for (const t of tokens) {
-    switch (t) {
-      case '+':
-        stack.push(stack.pop() + stack.pop());
-        break;
-      case '-':
-        // 注意：减法和除法要注意出栈顺序，后出的减去先出的
-        // 写法技巧：利用变量暂存先弹出的值
-        const sub = stack.pop();
-        stack.push(stack.pop() - sub);
-        break;
-      case '*':
-        stack.push(stack.pop() * stack.pop());
-        break;
-      case '/':
-        const div = stack.pop();
-        // 核心优化：使用位运算 (a / b) | 0 代替 Math.trunc(a / b)
-        // 这在 JS 中效率更高，且能自动处理向零取整（例如 -1.5 -> -1）
-        stack.push((stack.pop() / div) | 0);
-        break;
-      default:
-        // 优化：使用 Number() 或 +t 比 parseInt() 稍微快一点且更语义化
-        stack.push(Number(t));
-        break;
+  for (const token of tokens) {
+    // 如果是运算符
+    if (token === '+' || token === '-' || token === '*' || token === '/') {
+      // 坑1：顺序千万别搞反！先弹出的是右操作数，后弹出的是左操作数
+      const right = stack.pop();
+      const left = stack.pop();
+
+      let res = 0;
+      switch (token) {
+        case '+':
+          res = left + right;
+          break;
+        case '-':
+          res = left - right;
+          break;
+        case '*':
+          res = left * right;
+          break;
+        case '/':
+          // 坑2：除法必须向零截断
+          res = Math.trunc(left / right);
+          break;
+      }
+      // 把计算结果重新压入栈
+      stack.push(res);
+    } else {
+      // 坑3：如果是数字字符串，必须先转成 Number 再压栈
+      stack.push(Number(token));
     }
   }
+
+  // 最后栈里剩下的唯一元素就是答案
   return stack[0];
 };
