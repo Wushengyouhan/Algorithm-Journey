@@ -4,32 +4,31 @@
  * @return {number[]}
  */
 var maxSlidingWindow = function (nums, k) {
-  const q = []; // 存放下标的双端队列
-  const ans = []; // 结果数组
+  const res = [];
+  const queue = []; // 存储元素的下标
 
   for (let i = 0; i < nums.length; i++) {
-    // 1. 【去尾】维护单调递减
-    // 只要队尾元素比当前元素小，就踢掉（注意存的是下标，要取值比较）
-    while (q.length > 0 && nums[i] >= nums[q[q.length - 1]]) {
-      q.pop();
+    // 1. 清理队尾：如果当前元素大于等于队尾下标对应的元素，把队尾踢掉
+    // 保证队列是一个严格递减的结构
+    while (queue.length > 0 && nums[i] >= nums[queue[queue.length - 1]]) {
+      queue.pop();
     }
 
-    // 2. 【存号】入队
-    q.push(i);
+    // 2. 将当前元素的下标入队
+    queue.push(i);
 
-    // 3. 【去头】处理过期
-    // 当前下标 i，窗口大小 k，说明下标 <= i-k 的都过期了
-    // 因为每次只移动一步，最多只有一个过期，用 if 即可
-    if (q[0] <= i - k) {
-      q.shift();
+    // 3. 清理队头：如果队头下标已经不在滑动窗口内了，把它移除
+    // 窗口的左边界是 i - k + 1，如果队头下标 < 这个值，说明过期了
+    if (queue[0] <= i - k) {
+      queue.shift();
     }
 
-    // 4. 【记录】记录最大值
-    // 当窗口完全形成后开始记录 (下标从 0 开始，所以是 i >= k-1)
+    // 4. 记录结果：当遍历的元素数量达到了窗口大小 k 时，开始收集答案
+    // 因为队列是递减的，所以队头元素永远是当前窗口的最大值
     if (i >= k - 1) {
-      ans.push(nums[q[0]]);
+      res.push(nums[queue[0]]);
     }
   }
 
-  return ans;
+  return res;
 };
